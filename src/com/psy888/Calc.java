@@ -14,29 +14,28 @@ public class Calc {
     //6 - вычеслить все + -
     //7 - вернуть результат
 
-    private static ArrayList<String> operators;
-    private static ArrayList<String> stringNums;
-    private static ArrayList<Double> numbers;
+    private static ArrayList<String> operators = new ArrayList<>();
+    private static ArrayList<String> stringNums = new ArrayList<>();
+    private static ArrayList<Double> numbers = new ArrayList<>();
 
-    {
 
-        operators = new ArrayList<>();
-        stringNums = new ArrayList<>();
-        numbers = new ArrayList<>();
-    }
 
 
     private static boolean parseInput(String string) {
         //очищаем
         stringNums.clear();
         operators.clear();
+        numbers.clear();
         //добавляем
-        stringNums.addAll(Arrays.asList(string.split("\\d*\\.?\\d+")));
+        stringNums.addAll(Arrays.asList(string.split("[-*/+%^]")));
         for (String num : stringNums) {
             numbers.add(getNumber(num));
         }
-        operators.addAll(Arrays.asList(string.split("[-*/+%^()]")));
-
+        operators.addAll(Arrays.asList(string.split("\\d*\\.?\\d+")));
+        operators.remove(0);//костыль!!!!
+//        System.out.println("stringNums = " + stringNums);
+//        System.out.println("numbers = " + numbers);
+//        System.out.println("operators = " + operators);
         return numbers.size() == operators.size() + 1;
     }
 
@@ -54,26 +53,27 @@ public class Calc {
     }
 
 
-    public static String getResult(String str) {
+    public static String getResult(String str) throws Exception {
+        if(str.isEmpty()) throw new Exception("Ввод пустой строки!");
         while (findParentheses(str) != null) {
             int[] expressionIndexes = findParentheses(str);
             //выражение в скобках в виде строки
-            String subExpression = str.substring(expressionIndexes[0] + 1, expressionIndexes[1] - 1);
+            String subExpression = str.substring(expressionIndexes[0] + 1, expressionIndexes[1]);
 
             //2 - вычеслить выражения в скобках
             String tmpResult = doMath(subExpression);
 
             //3 - заменить выражения в скобках на результат вычисления в общей строке
-            str = str.substring(0, expressionIndexes[0]) + tmpResult + str.substring(expressionIndexes[1]);
+            str = str.substring(0, expressionIndexes[0]) + tmpResult + str.substring(expressionIndexes[1]+1);
 
         }
 
         return doMath(str);
     }
 
-    private static String doMath(String subExpression) {
+    private static String doMath(String subExpression) throws Exception {
         if(!parseInput(subExpression)) return subExpression;
-        String[] priority = {"^", "%", "/", "*", "+", "-"};
+        String[] priority = {"^", "%", "/", "*", "-", "+"};
         for (String s : priority) {
             while (operators.indexOf(s) != -1) {
                 double value = 0;
@@ -88,6 +88,7 @@ public class Calc {
                         value = a % b;
                         break;
                     case "/":
+                        if(b==0)throw new Exception("На ноль делить нельзя");
                         value = a / b;
                         break;
                     case "*":
