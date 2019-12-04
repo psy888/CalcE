@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class CalcMenu {
 
-    public void start(){
+    public void start() {
         String userInput = "";
         do {
             Scanner scanner = new Scanner(System.in);
@@ -12,7 +12,7 @@ public class CalcMenu {
             System.out.printf("-> ");
             userInput = scanner.nextLine();
             try {
-                System.out.println("= "+Calc.getResult(userInput));
+                System.out.println("= " + Calc.getResult(userInput));
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

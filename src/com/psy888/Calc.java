@@ -19,8 +19,6 @@ public class Calc {
     private static ArrayList<Double> numbers = new ArrayList<>();
 
 
-
-
     private static boolean parseInput(String string) {
         //очищаем
         stringNums.clear();
@@ -54,7 +52,7 @@ public class Calc {
 
 
     public static String getResult(String str) throws Exception {
-        if(str.isEmpty()) throw new Exception("Ввод пустой строки!");
+        if (str.isEmpty()) throw new Exception("Ввод пустой строки!");
         while (findParentheses(str) != null) {
             int[] expressionIndexes = findParentheses(str);
             //выражение в скобках в виде строки
@@ -64,7 +62,7 @@ public class Calc {
             String tmpResult = doMath(subExpression);
 
             //3 - заменить выражения в скобках на результат вычисления в общей строке
-            str = str.substring(0, expressionIndexes[0]) + tmpResult + str.substring(expressionIndexes[1]+1);
+            str = str.substring(0, expressionIndexes[0]) + tmpResult + str.substring(expressionIndexes[1] + 1);
 
         }
 
@@ -72,7 +70,7 @@ public class Calc {
     }
 
     private static String doMath(String subExpression) throws Exception {
-        if(!parseInput(subExpression)) return subExpression;
+        if (!parseInput(subExpression)) return subExpression;
         String[] priority = {"^", "%", "/", "*", "-", "+"};
         for (String s : priority) {
             while (operators.indexOf(s) != -1) {
@@ -88,7 +86,7 @@ public class Calc {
                         value = a % b;
                         break;
                     case "/":
-                        if(b==0)throw new Exception("На ноль делить нельзя");
+                        if (b == 0) throw new Exception("На ноль делить нельзя");
                         value = a / b;
                         break;
                     case "*":
